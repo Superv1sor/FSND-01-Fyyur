@@ -4,11 +4,16 @@ from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
 from wtforms.validators import DataRequired, AnyOf, URL
 
 class ShowForm(Form):
-    artist_id = StringField(
-        'artist_id'
+    # change to select bc more elegant
+    artist_id = SelectField(
+        'artist_id',
+        choices=[]
     )
-    venue_id = StringField(
-        'venue_id'
+    # change to select bc more elegant
+    venue_id = SelectField(
+        'venue_id',
+        validators=[DataRequired()],
+        coerce=int,  # id is integer
     )
     start_time = DateTimeField(
         'start_time',
