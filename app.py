@@ -21,7 +21,10 @@ from flask_migrate import Migrate
 from sqlalchemy import func
 # Add to get time
 from datetime import datetime
+# Importing SQLAlchemyError for handling database interaction errors
 from sqlalchemy.exc import SQLAlchemyError
+# Used for triggering HTTP errors
+from flask import abort 
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -405,19 +408,23 @@ def edit_artist(artist_id):
   form = ArtistForm()
   artist = Artist.query.get(artist_id)
   if artist:
-      form.name.data = artist.name
-      form.city.data = artist.city
-      form.genres.data = artist.genres
-      form.state.data = artist.state
-      form.phone.data = artist.phone
-      form.website_link.data = artist.website
-      form.facebook_link.data = artist.facebook_link
-      form.seeking_venue.data = artist.seeking_venue
-      form.seeking_description.data = artist.seeking_description
-      form.image_link.data = artist.image_link
+    form.name.data = artist.name
+    form.city.data = artist.city
+    form.genres.data = artist.genres
+    form.state.data = artist.state
+    form.phone.data = artist.phone
+    form.website_link.data = artist.website
+    form.facebook_link.data = artist.facebook_link
+    form.seeking_venue.data = artist.seeking_venue
+    form.seeking_description.data = artist.seeking_description
+    form.image_link.data = artist.image_link
       
-  # TODO: populate form with fields from artist with ID <artist_id>
-  return render_template('forms/edit_artist.html', form=form, artist=artist)
+    # TODO: populate form with fields from artist with ID <artist_id>
+    return render_template('forms/edit_artist.html', form=form, artist=artist)
+  
+  else:
+    abort(404)  # Artist not found
+
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
@@ -425,19 +432,22 @@ def edit_artist_submission(artist_id):
   # artist record with ID <artist_id> using the new attributes
   artist = Artist.query.get(artist_id)
   if artist:
-      artist.name = request.form['name']
-      artist.city = request.form['city']
-      genres_list = request.form.getlist('genres')
-      artist.genres = genres_list
-      artist.state = request.form['state']
-      artist.phone = request.form['phone']
-      artist.website = request.form['website_link']
-      artist.facebook_link = request.form['facebook_link']
-      artist.seeking_venue = True if request.form['seeking_venue'] == 'y' else False
-      artist.seeking_description = request.form['seeking_description']
-      artist.image_link = request.form['image_link']
-      db.session.commit()
-  return redirect(url_for('show_artist', artist_id=artist_id))
+    artist.name = request.form['name']
+    artist.city = request.form['city']
+    genres_list = request.form.getlist('genres')
+    artist.genres = genres_list
+    artist.state = request.form['state']
+    artist.phone = request.form['phone']
+    artist.website = request.form['website_link']
+    artist.facebook_link = request.form['facebook_link']
+    artist.seeking_venue = True if request.form['seeking_venue'] == 'y' else False
+    artist.seeking_description = request.form['seeking_description']
+    artist.image_link = request.form['image_link']
+    db.session.commit()
+    return redirect(url_for('show_artist', artist_id=artist_id))
+  
+  else:
+    abort(404) # Venue not found
 
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
@@ -462,6 +472,7 @@ def edit_venue(venue_id):
 
   else:
     abort(404) # Venue not found
+
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
