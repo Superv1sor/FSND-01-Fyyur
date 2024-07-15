@@ -186,8 +186,9 @@ def show_venue(venue_id):
   if not venue:
     return render_template('errors/404.html')
 
-  past_shows_query = Show.query.filter(Show.venue_id==venue_id).filter(Show.start_time<datetime.now()).all()
-  upcoming_shows_query = Show.query.filter(Show.venue_id==venue_id).filter(Show.start_time>datetime.now()).all()
+  past_shows_query = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id).filter(Show.start_time<datetime.now()).all()
+  upcoming_shows_query = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id).filter(Show.start_time>datetime.now()).all()
+
 
   past_shows = []
   for show in past_shows_query:
