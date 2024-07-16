@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
-from forms import *
+from forms import SearchForm, ShowForm, VenueForm, ArtistForm
 import collections
 collections.Callable = collections.abc.Callable
 from flask_migrate import Migrate
@@ -34,6 +34,11 @@ app.config.from_object('config')
 db.init_app(app)
 
 migrate = Migrate(app, db)
+
+# Inject forms
+@app.context_processor
+def inject_forms():
+    return dict(search_form=SearchForm())
 
 
 # Note: Models have been moved to the models.py file

@@ -13,6 +13,10 @@ def validate_phone(form, field):
         raise ValidationError('Invalid phone number format. It should be in the format (123) 456-7890.')
 
 
+class SearchForm(FlaskForm):
+    pass
+
+
 class ShowForm(FlaskForm):
     # change to select bc more elegant
     artist_id = SelectField(
