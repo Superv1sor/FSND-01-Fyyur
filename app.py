@@ -19,13 +19,16 @@ from sqlalchemy import func
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from flask import abort 
-# Importiere Modelle
+# Import models
 from models import db, Venue, Artist, Show 
+# Import CSRF
+from flask_wtf.csrf import CSRFProtect
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 moment = Moment(app)
 app.config.from_object('config')
 db.init_app(app)

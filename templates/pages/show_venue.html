@@ -100,6 +100,7 @@ block content %}
   method="post"
   style="display: inline"
 >
+  {{ form.csrf_token() }}
   <input type="hidden" name="_method_delete" value="DELETE" />
   <input type="submit" value="Delete Venue" class="btn btn-danger btn-lg" />
 </form>

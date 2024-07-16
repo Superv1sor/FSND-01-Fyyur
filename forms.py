@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask_wtf import Form
+from flask_wtf import FlaskForm #Change Form to FlaskForm bc of CSRF support
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
 import re
@@ -13,7 +13,7 @@ def validate_phone(form, field):
         raise ValidationError('Invalid phone number format. It should be in the format (123) 456-7890.')
 
 
-class ShowForm(Form):
+class ShowForm(FlaskForm):
     # change to select bc more elegant
     artist_id = SelectField(
         'artist_id',
@@ -31,7 +31,7 @@ class ShowForm(Form):
         default= datetime.today()
     )
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -143,7 +143,7 @@ class VenueForm(Form):
 
 
 
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
