@@ -168,8 +168,9 @@ def show_venue(venue_id):
     "past_shows_count": len(past_shows),
     "upcoming_shows_count": len(upcoming_shows),
   }
-
-  return render_template('pages/show_venue.html', venue=data)
+  
+  form = SearchForm()
+  return render_template('pages/show_venue.html', venue=data, form=form)
 
 #  Create Venue
 #  ----------------------------------------------------------------
@@ -365,7 +366,7 @@ def edit_artist(artist_id):
     form.seeking_description.data = artist.seeking_description
     form.image_link.data = artist.image_link
       
-    # TODO: populate form with fields from artist with ID <artist_id>
+    # TODO: populate form with fields from artist with ID <artist_id> >> done!
     return render_template('forms/edit_artist.html', form=form, artist=artist)
   
   else:
@@ -433,11 +434,12 @@ def edit_venue_submission(venue_id):
       venue.phone = request.form['phone']
       venue.website = request.form['website_link']
       venue.facebook_link = request.form['facebook_link']
-      venue.seeking_talent = request.form['seeking_talent'] == 'y'
+      venue.seeking_talent = 'seeking_talent' in request.form  # Check if the checkbox is in the form data
       venue.seeking_description = request.form['seeking_description']
       venue.image_link = request.form['image_link']
 
       db.session.commit()
+      flash('Venue ' + venue.name + ' was successfully updated!')
 
     else:
       abort(404) # Venue not found
@@ -445,6 +447,7 @@ def edit_venue_submission(venue_id):
   except Exception as e:
     db.session.rollback()
     print(e)
+    flash('An error occurred. Venue could not be updated.')
 
   finally:
     db.session.close()
