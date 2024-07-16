@@ -2,6 +2,16 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
+import re
+from wtforms import ValidationError
+
+# Validation for phone
+def validate_phone(form, field):
+    us_phone_num = r'^\(\d{3}\) \d{3}-\d{4}$'
+    match = re.match(us_phone_num, field.data)
+    if not match:
+        raise ValidationError('Invalid phone number format. It should be in the format (123) 456-7890.')
+
 
 class ShowForm(Form):
     # change to select bc more elegant
@@ -88,13 +98,13 @@ class VenueForm(Form):
         'address', validators=[DataRequired()]
     )
     phone = StringField(
-        'phone'
+        'phone', validators=[DataRequired(), validate_phone]
     )
     image_link = StringField(
         'image_link'
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
+        # TODO implement enum restriction >> done!
         'genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
@@ -197,8 +207,8 @@ class ArtistForm(Form):
         ]
     )
     phone = StringField(
-        # TODO implement validation logic for phone 
-        'phone'
+        # TODO implement validation logic for phone >> done!
+        'phone', validators=[DataRequired(), validate_phone]
     )
     image_link = StringField(
         'image_link'
@@ -228,7 +238,7 @@ class ArtistForm(Form):
         ]
      )
     facebook_link = StringField(
-        # TODO implement enum restriction
+        # TODO implement enum restriction >> done!
         'facebook_link', validators=[URL()]
      )
 
