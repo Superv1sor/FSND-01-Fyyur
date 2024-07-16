@@ -7,8 +7,8 @@ from wtforms import ValidationError
 
 # Validation for phone
 def validate_phone(form, field):
-    us_phone_num = r'^\(\d{3}\) \d{3}-\d{4}$'
-    match = re.match(us_phone_num, field.data)
+    intl_phone_num = r'^\(\d{1,3}\) \d{1,4}-\d{4,10}$'
+    match = re.match(intl_phone_num, field.data)
     if not match:
         raise ValidationError('Invalid phone number format. It should be in the format (123) 456-7890.')
 

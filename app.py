@@ -322,6 +322,8 @@ def show_artist(artist_id):
             "venue_image_link": venue.image_link,
             "start_time": str(show.start_time)
         }
+
+        # print(f"Show start time: {show.start_time}, Current time: {now}")
         if show.start_time > now:
             upcoming_shows.append(show_info)
         else:
