@@ -379,24 +379,36 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
-  artist = Artist.query.get(artist_id)
-  if artist:
-    artist.name = request.form['name']
-    artist.city = request.form['city']
-    genres_list = request.form.getlist('genres')
-    artist.genres = genres_list
-    artist.state = request.form['state']
-    artist.phone = request.form['phone']
-    artist.website = request.form['website_link']
-    artist.facebook_link = request.form['facebook_link']
-    artist.seeking_venue = True if request.form['seeking_venue'] == 'y' else False
-    artist.seeking_description = request.form['seeking_description']
-    artist.image_link = request.form['image_link']
-    db.session.commit()
-    return redirect(url_for('show_artist', artist_id=artist_id))
-  
-  else:
-    abort(404) # Venue not found
+  try:
+    artist = Artist.query.get(artist_id)
+    if artist:
+      # Logging the fields and their values
+      for field in request.form:
+        app.logger.info(f"Field {field}: {request.form[field]}")
+        
+      artist.name = request.form['name']
+      artist.city = request.form['city']
+      genres_list = request.form.getlist('genres')
+      artist.genres = genres_list
+      artist.state = request.form['state']
+      artist.phone = request.form['phone']
+      artist.website = request.form['website_link']
+      artist.facebook_link = request.form['facebook_link']
+      artist.seeking_venue = True if request.form.get('seeking_venue') == 'y' else False
+      artist.seeking_description = request.form['seeking_description']
+      artist.image_link = request.form['image_link']
+      db.session.commit()
+      flash('Artist ' + artist.name + ' was successfully updated!')
+      return redirect(url_for('show_artist', artist_id=artist_id))
+    else:
+      abort(404)  # Artist not found
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+    flash('An error occurred. Artist could not be updated.')
+  finally:
+    db.session.close()
+
 
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
